@@ -18,6 +18,7 @@ class CreatePhotosTable extends Migration
             $table->text('explanation');
             $table->text('name');
             $table->string('picture_path');
+            $table->string('location');
             $table->integer('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
             $table->timestamps();

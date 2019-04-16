@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Str;
 
 class PhotoTableSeeder extends Seeder
 {
@@ -17,6 +18,7 @@ class PhotoTableSeeder extends Seeder
                 'explanation' => Str::random(5),
                 'name' => Str::random(5),
                 'picture_path' => Str::random(15),
+                'location' => Str::random(7),
                 'user_id'=>rand(1,5)
 
             ]);

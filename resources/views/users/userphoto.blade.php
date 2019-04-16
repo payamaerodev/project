@@ -18,6 +18,15 @@
                 <th scope="col">دنبال کردن</th>
                 <th scope="col">مسدود کردن</th>
             </tr>
+
+            <tr>
+
+                @foreach($user->photos as $photo)
+                    <td>
+                        {{$photo}}
+                    </td>
+                @endforeach
+            </tr>
             @foreach($user as $person)
 
             </thead>
@@ -26,8 +35,8 @@
                 <td>{{$person->name}}</td>
                 <td>{{$person->email}}</td>
                 <td>{{$person->created_at}}</td>
-                <td><a href="{{ route('user.follow',$person->id)}}">Follow User</a></td>
-                <td><a href="{{ route('user.unfollow',$person->id)}}">Block User</a></td>
+                <td><a href="{{ route('users.follow',$person->id)}}">Follow User</a></td>
+                <td><a href="{{ route('users.unfollow',$person->id)}}">Block User</a></td>
             </tr>
 
 

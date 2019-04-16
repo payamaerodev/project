@@ -39,7 +39,7 @@ class ImageUploadController extends Controller
         $id = auth()->user()->id;
 
         $path = public_path('images') . '.';
-        $path .= request()->image->getClientOriginalExtension();
+        $path .= $imageName;
         User::where(['id' => $id])->update(['picture_path' => $path]);
         request()->image->move(public_path('images'), $imageName);
         return back()->with('success', 'تصویر با موفقیت بارگذاری شد')->with('image', $imageName);

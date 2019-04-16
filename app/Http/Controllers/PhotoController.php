@@ -44,6 +44,14 @@ class PhotoController extends Controller
     {
         $photo = new Photo(($request->all()));
         $photo->save();
+        $imageName = time() . '.' . request()->image->getClientOriginalExtension();
+        $id = auth()->user()->id;
+        $path = public_path('images') . '.';
+        $path .= $imageName;
+        dd($path);
+//        $photo->path = $path;
+        Photo::where(['user_id' => $id])->update(['picture_path' => $path]);
+        User::where(['id' => $id])->update(['picture_path' => $path]);
         return Redirect::route('photos.index');
     }
 
@@ -57,7 +65,6 @@ class PhotoController extends Controller
     {
         $user = User::find($id);
         $photos = $user->photos;
-//        dd($photos->picture_path);
         return view('photo.show', compact('photos', 'user'));
     }
 
@@ -100,7 +107,7 @@ class PhotoController extends Controller
 
     public function like_post ($id)
     {
-        DB::table('like')->where('id',$id)->update(['likestatus'=>true]);
+        DB::table('like')->where('id', $id)->update(['likestatus' => true]);
         return Redirect::back();
     }
 }

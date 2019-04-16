@@ -17,11 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::resource('user', 'UserController');
+Route::resource('users', 'UserController');
 Route::resource('photos', 'PhotoController');
 Auth::routes();
-Route::match(['post', 'get'], 'profile/{profileId}/follow', 'ProfileController@followUser')->name('user.follow');
-Route::match(['post', 'get'], 'profile/{profileId}/unfollow', 'ProfileController@unFollowUser')->name('user.unfollow');
+Route::match(['post', 'get'], 'profile/{profileId}/follow', 'ProfileController@followUser')->name('users.follow');
+Route::match(['post', 'get'], 'profile/{profileId}/unfollow', 'ProfileController@unFollowUser')->name('users.unfollow');
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('image-upload', 'ImageUploadController@imageUpload')->name('image.upload');
 Route::get('/like-post/{postId}', 'PhotoController@like_post')->name('like-post');

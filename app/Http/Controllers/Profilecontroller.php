@@ -43,6 +43,6 @@ class Profilecontroller extends Controller
             return redirect()->back()->with('error', 'User does not exist.');
         }
         $user->followers()->detach(auth()->user()->id);
-        return redirect()->back()->with('success', 'Successfully unfollowed the user.');
+        return redirect()->back()->with('success', 'تصویر با موفقیت بارگذاری شد');
     }
 }

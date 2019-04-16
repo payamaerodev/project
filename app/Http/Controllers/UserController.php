@@ -15,9 +15,8 @@ class UserController extends Controller
     public function index ()
     {
         $user = User::all();
-//        $user->followers()->attach(1);
-//      dd($user->followers());
-        return view('user.index', compact('user'));
+
+        return view('users.index', compact('user'));
     }
 
     /**
