@@ -25,4 +25,5 @@ Route::match(['post', 'get'], 'profile/{profileId}/unfollow', 'ProfileController
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('image-upload', 'ImageUploadController@imageUpload')->name('image.upload');
 Route::get('/like-post/{postId}', 'PhotoController@like_post')->name('like-post');
+Route::get('/post-comment/{id}', 'PhotoController@comment')->name('post-comment');
 Route::post('image-upload', 'ImageUploadController@imageUploadPost')->name('image.upload.post');

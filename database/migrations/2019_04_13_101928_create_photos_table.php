@@ -17,10 +17,13 @@ class CreatePhotosTable extends Migration
             $table->bigIncrements('id');
             $table->text('explanation');
             $table->text('name');
+            $table->integer('like_id')->nullable();
+
             $table->string('picture_path');
             $table->string('location');
             $table->integer('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('like_id')->references('id')->on('like');
             $table->timestamps();
         });
     }

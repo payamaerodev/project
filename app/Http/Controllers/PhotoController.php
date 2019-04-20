@@ -19,7 +19,7 @@ class PhotoController extends Controller
      */
     public function index (Request $request)
     {
-
+        $photo = Photo::all();
 
         return view('photo.index', compact('photo'));
     }
@@ -71,10 +71,14 @@ class PhotoController extends Controller
      */
     public function show ($id)
     {
-        $user = User::find($id);
+        $user = User::findorfail($id);
         $photos = $user->photos;
-
-        return view('photo.show', compact('photos', 'user'));
+        $photo = $photos->where('id', $user->photo_id);
+        $like_id = $photo[0]['like_id'];
+        $likes = Like::where('id', $like_id)->get();
+        $is_like = $likes[0]['likestatus'];
+        $comment = $likes[0]['comment'];
+        return view('photo.show', compact('photos', 'user', 'is_like', 'comment'));
     }
 
     /**
@@ -95,11 +99,11 @@ class PhotoController extends Controller
      *
      * @param  \Illuminate\Http\Request $request
      * @param  int $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function update (Request $request, $id)
     {
-        //
+
     }
 
     /**
@@ -120,6 +124,15 @@ class PhotoController extends Controller
         $like = $photo[0]['likestatus'];
         $photo[0]->update(['likestatus' => !$like]);
 
+        return Redirect::back();
+    }
+
+    public function comment (Request $request, $id)
+
+    {
+        $like = Like::where('photo_id', $id)->update(['comment' => $request->comment]);
+//        dd($request->all());
+//        dd($like);
         return Redirect::back();
     }
 }

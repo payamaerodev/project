@@ -40,7 +40,7 @@ class Photo extends Model
     }
     public function likes ()
     {
-        $this->hasMany('App\Like','photo_id','id');
+        $this->hasMany('App\Like');
 
     }
 

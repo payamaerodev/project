@@ -30,7 +30,7 @@
             </td>
             <td><div > <a href="{{ route('users.unfollow',$person->id)}}"><i class="fas fa-user-minus"></i></a></td>
 
-            <td><a href="{{ route('photos.show', ['id' => $person->id])}}"><i class="fas fa-user-circle"></i></a></td>
+            <td><a href="{{ route('photos.show', ['id' => $person->photo_id])}}"><i class="fas fa-user-circle"></i></a></td>
 
         </tr>
 

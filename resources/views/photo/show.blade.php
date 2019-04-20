@@ -5,13 +5,16 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
               integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
               crossorigin="anonymous">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+              integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf"
+              crossorigin="anonymous">
+
+
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
                 integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
                 crossorigin="anonymous">
 
         </script>
-
-
 
         <div class="justify-content-center col-md-4">
             @foreach($photos as $photo)
@@ -20,24 +23,24 @@
                     <div class="post-item">
                         <img src="{{asset($photo->picture_path)}}" alt="ProfilePicture" height="42%" width="42%">
                         </br> <a href="{{route('like-post',['id'=>$photo->id])}}"><span class="like-post">
-                                {{--@dd($photo->likestatus)--}}
-                                @if($photo->likestatus )
+                                @if($is_like==0)
                                     <i class="far fa-heart"></i>
                                 @else
                                     ❤
                                 @endif</span></a>
                     </div>
                 </td>
+                <form action="{{route('post-comment',['id'=>$photo->id])}}" method="get">
+                    <div class="form-group">
+                        <label class="form-control">comment</label>
+                        <input type="text" name=comment class="form-control" value="{{$comment}}"
+                               placeholder="توضیحاتی راجع به عکس بنویسید ">
+                    </div>
+                    <input type="submit" class="button-blue">
+
+                </form>
             @endforeach
-            <form>
-                <div class="form-group">
-                    <label class="form-control">comment</label>
-                    <input type="email" class="form-control" id="exampleFormControlInput1"
-                           placeholder="توضیحاتی راجع به عکس بنویسید ">
-                </div>
 
-
-            </form>
 
             <label>توضیحات :</label>
             <ul class="list-group list-group-flush">
