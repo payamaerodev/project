@@ -37,7 +37,8 @@ class Photo extends Model
     {
         $this->belongsToMany('App\User','photo_id','id');
 
-    } public function likes ()
+    }
+    public function likes ()
     {
         $this->hasMany('App\Like','photo_id','id');
 

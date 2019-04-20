@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Like;
 use App\Photo;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
-use Post;
+
 
 class PhotoController extends Controller
 {
@@ -16,10 +17,9 @@ class PhotoController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index ()
+    public function index (Request $request)
     {
-//        $user=User::find(5);
-//dd($user->photos);
+
 
         return view('photo.index', compact('photo'));
     }
@@ -42,16 +42,24 @@ class PhotoController extends Controller
      */
     public function store (Request $request)
     {
-        $photo = new Photo(($request->all()));
-        $photo->save();
-        $imageName = time() . '.' . request()->image->getClientOriginalExtension();
-        $id = auth()->user()->id;
-        $path = public_path('images') . '.';
-        $path .= $imageName;
-        dd($path);
-//        $photo->path = $path;
-        Photo::where(['user_id' => $id])->update(['picture_path' => $path]);
-        User::where(['id' => $id])->update(['picture_path' => $path]);
+
+
+//        $imageName = time() . '.' . request()->image->getClientOriginalExtension();
+//        $id = auth()->user()->id;
+//
+//        $path = public_path('images') . '.';
+//        $path .= $imageName;
+//
+////        $photo = new Photo(($request->all()));
+////        $photo->save();
+////        $imageName = time() . '.' . request()->image->getClientOriginalExtension();
+////        $id = auth()->user()->id;
+////        $path = public_path('images') . '.';
+////        $path .= $imageName;
+////        dd($path);
+//////        $photo->path = $path;
+//        Photo::where(['user_id' => $id])->update(['picture_path' => $path]);
+//        User::where(['id' => $id])->update(['picture_path' => $path]);
         return Redirect::route('photos.index');
     }
 
@@ -65,6 +73,7 @@ class PhotoController extends Controller
     {
         $user = User::find($id);
         $photos = $user->photos;
+
         return view('photo.show', compact('photos', 'user'));
     }
 
@@ -107,7 +116,10 @@ class PhotoController extends Controller
 
     public function like_post ($id)
     {
-        DB::table('like')->where('id', $id)->update(['likestatus' => true]);
+        $photo = Like::where('photo_id', $id)->get();
+        $like = $photo[0]['likestatus'];
+        $photo[0]->update(['likestatus' => !$like]);
+
         return Redirect::back();
     }
 }

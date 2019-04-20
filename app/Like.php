@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Like extends Model
 {
+    protected $table='Like';
+    protected $fillable=['likestatus'];
     public function photo ()
     {
         return $this->belongsToMany('App\Photo');

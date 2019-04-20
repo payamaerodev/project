@@ -16,6 +16,7 @@ class CreateLikeTable extends Migration
         Schema::create('like', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->integer('photo_id');
+            $table->text('comment');
             $table->boolean('likestatus')->default(false);
             $table->timestamps();
         });

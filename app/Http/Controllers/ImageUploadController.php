@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Photo;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class ImageUploadController extends Controller
 {
@@ -38,11 +40,13 @@ class ImageUploadController extends Controller
         $imageName = time() . '.' . request()->image->getClientOriginalExtension();
         $id = auth()->user()->id;
 
-        $path = public_path('images') . '.';
-        $path .= $imageName;
-        User::where(['id' => $id])->update(['picture_path' => $path]);
+        $picPath = "images/{$imageName}";
+
+        User::where(['id' => $id])->update(['picture_path' => $picPath]);
+        Photo::where(['user_id' => $id])->update(['picture_path' => $picPath]);
+
         request()->image->move(public_path('images'), $imageName);
-        return back()->with('success', 'تصویر با موفقیت بارگذاری شد')->with('image', $imageName);
+        return Redirect::route('photos.create')->with('success', 'تصویر با موفقیت بارگذاری شد')->with('image', $imageName);
     }
 
 }
