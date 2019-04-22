@@ -12,7 +12,7 @@ class Photo extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'explanation', 'picture_path','post_id'
+        'name', 'explanation', 'picture_path','post_id','location'
     ];
 
     /**
@@ -35,7 +35,8 @@ class Photo extends Model
 
     public function user ()
     {
-        $this->belongsToMany('App\User','photo_id','id');
+
+        return $this->belongsToMany('App\User');
 
     }
     public function likes ()

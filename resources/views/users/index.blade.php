@@ -11,6 +11,7 @@
             <th scope="col">دنبال کردن</th>
             <th scope="col">مسدود کردن</th>
             <th scope="col">دیدن پروفایل</th>
+            <th scope="col">ایجاد تصویر پروقایل</th>
         </tr>
         </thead>
         <tbody>
@@ -30,7 +31,8 @@
             </td>
             <td><div > <a href="{{ route('users.unfollow',$person->id)}}"><i class="fas fa-user-minus"></i></a></td>
 
-            <td><a href="{{ route('photos.show', ['id' => $person->photo_id])}}"><i class="fas fa-user-circle"></i></a></td>
+            <td><a href="{{ route('photos.show', ['id' => $person->id])}}"><i class="fas fa-user-circle"></i></a></td>
+            <td><a href="{{ route('photos.create', ['id' => $person->id])}}"><i class="far fa-user-circle"></i></a></td>
 
         </tr>
 

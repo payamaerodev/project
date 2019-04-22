@@ -17,7 +17,7 @@ class User extends Authenticatable
      */
 
     protected $fillable = [
-        'name', 'email', 'password','user_id'
+        'name', 'email', 'password','user_id','photo_id'
     ];
 
     /**
@@ -44,7 +44,8 @@ class User extends Authenticatable
      */
     public function photos()
     {
-        return $this->hasMany(Photo::class);
+       return $this->hasMany(Photo::class);
+
     }
 
     public function followers()

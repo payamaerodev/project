@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Exceptions\NoPhotoException;
 use App\Like;
 use App\Photo;
 use App\User;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -20,7 +22,6 @@ class PhotoController extends Controller
     public function index (Request $request)
     {
         $photo = Photo::all();
-
         return view('photo.index', compact('photo'));
     }
 
@@ -43,41 +44,72 @@ class PhotoController extends Controller
     public function store (Request $request)
     {
 
+        $imageName = time() . '.' . request()->image->getClientOriginalExtension();
 
-//        $imageName = time() . '.' . request()->image->getClientOriginalExtension();
-//        $id = auth()->user()->id;
-//
-//        $path = public_path('images') . '.';
-//        $path .= $imageName;
-//
-////        $photo = new Photo(($request->all()));
-////        $photo->save();
-////        $imageName = time() . '.' . request()->image->getClientOriginalExtension();
-////        $id = auth()->user()->id;
-////        $path = public_path('images') . '.';
-////        $path .= $imageName;
-////        dd($path);
-//////        $photo->path = $path;
-//        Photo::where(['user_id' => $id])->update(['picture_path' => $path]);
-//        User::where(['id' => $id])->update(['picture_path' => $path]);
-        return Redirect::route('photos.index');
+        $id = auth()->user()->id;
+
+        $picPath = "images/{$imageName}";
+
+        $user = auth()->user();
+
+        $photo = new Photo(($request->all()));
+
+        $photo->picture_path = $picPath;
+
+        $photo->user_id = $id;
+
+        $photo->save();
+
+        auth()->user()->update(['photo_id' => $photo->id]);
+
+
+        request()->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg',
+        ]);
+
+        $photos = $user->photos;
+
+        $imageName = time() . '.' . request()->image->getClientOriginalExtension();
+        $id = auth()->user()->id;
+        $picPath = "/images/{$imageName}";
+
+        User::where(['id' => $id])->update(['picture_path' => $picPath]);
+        Photo::where(['user_id' => $id])->update(['picture_path' => $picPath]);
+
+        request()->image->move(public_path('images'), $imageName);
+
+        return Redirect::route('photos.show', ['id' => $user->id]);
+//        return view('photo.show', ['id' => $photo->id,'user'=>$user,'photos'=>$photos]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function show ($id)
     {
-        $user = User::findorfail($id);
+        $user = User::findOrFail($id);
+
         $photos = $user->photos;
-        $photo = $photos->where('id', $user->photo_id);
-        $like_id = $photo[0]['like_id'];
-        $likes = Like::where('id', $like_id)->get();
-        $is_like = $likes[0]['likestatus'];
-        $comment = $likes[0]['comment'];
+
+        $comment = '';
+
+        $photo = $user->photos()->first();
+
+        if ($user->photos()->count() == 0) {
+
+            throw new NoPhotoException("there isnt any picture for this profile");
+
+        };
+
+        $photo_id = $photo->id;
+
+        $is_like = Like::where('photo_id', $id)->exists();
+//        dd($is_like);
+
+        $likes = Like::where('photo_id', $photo->id)->first();
+
+        if (!is_null($likes) && $likes->comment) {
+
+            $comment = $likes->comment;
+        }
         return view('photo.show', compact('photos', 'user', 'is_like', 'comment'));
     }
 
@@ -120,19 +152,23 @@ class PhotoController extends Controller
 
     public function like_post ($id)
     {
-        $photo = Like::where('photo_id', $id)->get();
-        $like = $photo[0]['likestatus'];
-        $photo[0]->update(['likestatus' => !$like]);
+        $liked = Like::where('photo_id', $id)->first();
+        if ($liked) {
+            $liked->delete();
+        } else {
+            Like::firstOrCreate(['photo_id' => $id, 'likestatus' => true]);
+
+        }
 
         return Redirect::back();
+
     }
 
     public function comment (Request $request, $id)
 
     {
-        $like = Like::where('photo_id', $id)->update(['comment' => $request->comment]);
-//        dd($request->all());
-//        dd($like);
+        Like::where('photo_id', $id)->firstOrCreate(['photo_id' => $id])->update(['comment' => $request->comment]);
+
         return Redirect::back();
     }
 }

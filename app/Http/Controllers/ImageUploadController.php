@@ -33,14 +33,15 @@ class ImageUploadController extends Controller
     public function imageUploadPost ()
 
     {
+        dd('$picPat');
         request()->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg',
         ]);
 
+
         $imageName = time() . '.' . request()->image->getClientOriginalExtension();
         $id = auth()->user()->id;
-
-        $picPath = "images/{$imageName}";
+        $picPath = "/images/{$imageName}";
 
         User::where(['id' => $id])->update(['picture_path' => $picPath]);
         Photo::where(['user_id' => $id])->update(['picture_path' => $picPath]);

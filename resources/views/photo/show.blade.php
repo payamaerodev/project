@@ -1,3 +1,5 @@
+{{--<img src="/images/1555421624.jpg" alt="ProfilePicture" height="42%" width="42%">--}}
+
 <div style="background-color:lightskyblue">
     @if(auth()->user()->followings()->where('followers.leader_id', $user->id)->count())
 
@@ -21,19 +23,22 @@
                 <td colspan="4">
 
                     <div class="post-item">
-                        <img src="{{asset($photo->picture_path)}}" alt="ProfilePicture" height="42%" width="42%">
+                        <img src="{{asset($photo->picture_path)}}" alt="ProfilePicture" height="80%" width="80%">
                         </br> <a href="{{route('like-post',['id'=>$photo->id])}}"><span class="like-post">
-                                @if($is_like==0)
+                                @if($is_like==false)
                                     <i class="far fa-heart"></i>
-                                @else
+                                @endif
+                                @if($is_like==true)
                                     ❤
                                 @endif</span></a>
+
+
                     </div>
                 </td>
                 <form action="{{route('post-comment',['id'=>$photo->id])}}" method="get">
                     <div class="form-group">
                         <label class="form-control">comment</label>
-                        <input type="text" name=comment class="form-control" value="{{$comment}}"
+                        <input type="text" name=comment class="form-control"
                                placeholder="توضیحاتی راجع به عکس بنویسید ">
                     </div>
                     <input type="submit" class="button-blue">
