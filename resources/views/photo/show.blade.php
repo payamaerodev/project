@@ -31,17 +31,21 @@
                                     ❤
                                 @endif
                             </span></a>
+                        <div>{{$photo->likes()->count()}} likes</div>
 
 
                     </div>
                 </td>
                 <form action="{{route('post-comment',['id'=>$photo->id])}}" method="get">
                     <div class="form-group">
-                        <label class="form-control">comment</label>
+                        @foreach($photo->comments as $comment)
+                            <label class="form-control">{{$comment->comment}}</label>
+                        @endforeach
                         <input type="text" name=comment class="form-control"
                                placeholder="توضیحاتی راجع به عکس بنویسید ">
                     </div>
-                    <input type="submit" class="button-blue">
+                    <button type="submit" class="btn btn-info">post</button>
+
 
                 </form>
             @endforeach

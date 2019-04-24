@@ -38,11 +38,14 @@ class Profilecontroller extends Controller
     public function unFollowUser (int $profileId)
     {
         $user = User::find($profileId);
+
         if (!$user) {
 
             return redirect()->back()->with('error', 'User does not exist.');
         }
+
         $user->followers()->detach(auth()->user()->id);
+
         return redirect()->back()->with('success', 'تصویر با موفقیت بارگذاری شد');
     }
 }

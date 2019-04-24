@@ -12,6 +12,12 @@ use Illuminate\Support\Facades\Redirect;
 
 class PhotoController extends Controller
 {
+
+    public function __construct ()
+    {
+        $this->middleware('auth');
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -20,6 +26,7 @@ class PhotoController extends Controller
     public function index (Request $request)
     {
         $photo = Photo::all();
+
         return view('photo.index', compact('photo'));
     }
 
@@ -89,11 +96,6 @@ class PhotoController extends Controller
         };
 
 
-//        $is_like = Like::where([
-//                ['photo_id', '=', $id],
-//                ['user_id', '=', auth()->user()->id]]
-//        )->exists();
-
         $likes = Like::where('photo_id', $photo->id)->get();
 
 
@@ -102,7 +104,7 @@ class PhotoController extends Controller
                 $comment = $likes->comment;
             }
         }
-        return view('photo.show', compact('photos', 'user', 'is_liked', 'comment'));
+        return view('photo.show', compact('photos', 'user', 'comment'));
     }
 
     /**
@@ -120,16 +122,18 @@ class PhotoController extends Controller
 
 
     public function like_post ($id)
-        //['photo_id' => $id],
     {
         $liked = Like::where([
             ['user_id', '=', auth()->user()->id],
             ['photo_id', '=', $id],
         ])->exists();
-//        dd($liked);
+
         $any_liked = Like::where(['photo_id' => $id],
+
             ['user_id' => auth()->user()->id])->first();
+
         $photo = Photo::find($id);
+
         if ($liked) {
             if (isset($any_liked)) {
 
@@ -146,12 +150,6 @@ class PhotoController extends Controller
 
     }
 
-    public function comment (Request $request, $id)
 
-    {
-        Like::where('photo_id', $id)->firstOrCreate(['photo_id' => $id])->update(['comment' => $request->comment]);
-
-        return Redirect::back();
-    }
 }
 
