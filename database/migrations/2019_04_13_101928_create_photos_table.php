@@ -23,7 +23,7 @@ class CreatePhotosTable extends Migration
             $table->string('location');
             $table->integer('user_id')->nullable();
             $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('like_id')->references('id')->on('like');
+            $table->foreign('like_id')->references('id')->on('likes');
             $table->timestamps();
         });
     }

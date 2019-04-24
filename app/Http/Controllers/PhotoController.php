@@ -6,9 +6,7 @@ use App\Exceptions\NoPhotoException;
 use App\Like;
 use App\Photo;
 use App\User;
-use Exception;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
 
@@ -43,7 +41,9 @@ class PhotoController extends Controller
      */
     public function store (Request $request)
     {
-
+        request()->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg',
+        ]);
         $imageName = time() . '.' . request()->image->getClientOriginalExtension();
 
         $id = auth()->user()->id;
@@ -60,26 +60,17 @@ class PhotoController extends Controller
 
         $photo->save();
 
-        auth()->user()->update(['photo_id' => $photo->id]);
 
-
-        request()->validate([
-            'image' => 'required|image|mimes:jpeg,png,jpg',
-        ]);
-
-        $photos = $user->photos;
-
-        $imageName = time() . '.' . request()->image->getClientOriginalExtension();
         $id = auth()->user()->id;
+
         $picPath = "/images/{$imageName}";
 
         User::where(['id' => $id])->update(['picture_path' => $picPath]);
-        Photo::where(['user_id' => $id])->update(['picture_path' => $picPath]);
+
 
         request()->image->move(public_path('images'), $imageName);
 
         return Redirect::route('photos.show', ['id' => $user->id]);
-//        return view('photo.show', ['id' => $photo->id,'user'=>$user,'photos'=>$photos]);
     }
 
 
@@ -91,26 +82,27 @@ class PhotoController extends Controller
 
         $comment = '';
 
-        $photo = $user->photos()->first();
+        $photo = $user->photos->first();
 
         if ($user->photos()->count() == 0) {
-
             throw new NoPhotoException("there isnt any picture for this profile");
-
         };
 
-        $photo_id = $photo->id;
 
-        $is_like = Like::where('photo_id', $id)->exists();
-//        dd($is_like);
+//        $is_like = Like::where([
+//                ['photo_id', '=', $id],
+//                ['user_id', '=', auth()->user()->id]]
+//        )->exists();
 
-        $likes = Like::where('photo_id', $photo->id)->first();
+        $likes = Like::where('photo_id', $photo->id)->get();
 
-        if (!is_null($likes) && $likes->comment) {
 
-            $comment = $likes->comment;
+        if (isset($likes->comment)) {
+            if (!is_null($likes) && $likes->comment) {
+                $comment = $likes->comment;
+            }
         }
-        return view('photo.show', compact('photos', 'user', 'is_like', 'comment'));
+        return view('photo.show', compact('photos', 'user', 'is_liked', 'comment'));
     }
 
     /**
@@ -126,39 +118,29 @@ class PhotoController extends Controller
         return view('photo.edit', compact('photo'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  int $id
-     * @return \Illuminate\Http\RedirectResponse
-     */
-    public function update (Request $request, $id)
-    {
-
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy ($id)
-    {
-        //
-    }
-
 
     public function like_post ($id)
+        //['photo_id' => $id],
     {
-        $liked = Like::where('photo_id', $id)->first();
+        $liked = Like::where([
+            ['user_id', '=', auth()->user()->id],
+            ['photo_id', '=', $id],
+        ])->exists();
+//        dd($liked);
+        $any_liked = Like::where(['photo_id' => $id],
+            ['user_id' => auth()->user()->id])->first();
+        $photo = Photo::find($id);
         if ($liked) {
-            $liked->delete();
+            if (isset($any_liked)) {
+
+                $any_liked->delete();
+            }
         } else {
-            Like::firstOrCreate(['photo_id' => $id, 'likestatus' => true]);
+
+            Like::Create(['user_id' => auth()->user()->id, 'photo_id' => $id, 'likestatus' => true]);
 
         }
+
 
         return Redirect::back();
 

@@ -35,14 +35,12 @@ class Photo extends Model
 
     public function user ()
     {
-
         return $this->belongsToMany('App\User');
-
     }
+
     public function likes ()
     {
-        $this->hasMany('App\Like');
-
+       return $this->hasMany('App\Like');
     }
 
 

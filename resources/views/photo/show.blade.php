@@ -1,5 +1,3 @@
-{{--<img src="/images/1555421624.jpg" alt="ProfilePicture" height="42%" width="42%">--}}
-
 <div style="background-color:lightskyblue">
     @if(auth()->user()->followings()->where('followers.leader_id', $user->id)->count())
 
@@ -23,14 +21,16 @@
                 <td colspan="4">
 
                     <div class="post-item">
-                        <img src="{{asset($photo->picture_path)}}" alt="ProfilePicture" height="80%" width="80%">
+                        <img src="{{asset($photo->picture_path)}}" alt="ProfilePicture" height="85%" width="80%">
                         </br> <a href="{{route('like-post',['id'=>$photo->id])}}"><span class="like-post">
-                                @if($is_like==false)
+                                @if(!$photo->likes()->where('user_id',auth()->user()->id)->first())
                                     <i class="far fa-heart"></i>
-                                @endif
-                                @if($is_like==true)
+                                @else
+                                    <i class="far fared-heart"></i>
+
                                     ❤
-                                @endif</span></a>
+                                @endif
+                            </span></a>
 
 
                     </div>
@@ -62,8 +62,8 @@
                 <li class="list-group-item" style="background-color: #1d75b3">{{$user->name}}</li>
                 <label>ایمیل کاربر :</label>
                 <li class="list-group-item" style="background-color: #1d75b3">{{$user->email}}</li>
-                <label>تاریخ ایجاد پروفایل :</label>
-                <li class="list-group-item" style="background-color: #1d75b3">{{$user->created_at}}</li>
+                <label>تاریخ تایید کاربر :</label>
+                <li class="list-group-item" style="background-color: #1d75b3">{{$user->verified_at}}</li>
             </ul>
 
         </div>
