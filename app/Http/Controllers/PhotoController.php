@@ -128,9 +128,9 @@ class PhotoController extends Controller
             ['photo_id', '=', $id],
         ])->exists();
 
-        $any_liked = Like::where(['photo_id' => $id],
+        $any_liked = Like::where([['photo_id', '=', $id],
 
-            ['user_id' => auth()->user()->id])->first();
+            ['user_id', '=', auth()->user()->id]])->first();
 
         $photo = Photo::find($id);
 
